@@ -193,7 +193,7 @@
      </form>
     </div><!-- Form Input -->
     <div class="no-print rounded-3xl shadow-2xl p-6 mb-8 glass-effect" style="background: rgba(255, 255, 255, 0.95);">
-     <div class="flex items-center gap-3 mb-6"><span class="text-3xl">✨</span>
+     <div class="flex items-center gap-3 mb-6"><span class="text-3xl">����</span>
       <h2 class="font-heading text-2xl font-semibold text-slate-800">Buat Kwitansi Baru</h2>
      </div>
      <form id="receipt-form" class="space-y-5">
@@ -814,37 +814,55 @@
     });
 
     // Form submission
-    document.getElementById('receipt-form').addEventListener('submit', (e) => {
+    document.getElementById('receipt-form').addEventListener('submit', function(e) {
       e.preventDefault();
       
       const diterimaDari = document.getElementById('diterima-dari').value.trim();
-      const uangSejumlah = parseInt(document.getElementById('uang-sejumlah').value) || 0;
+      const uangSejumlahInput = document.getElementById('uang-sejumlah').value;
+      const uangSejumlah = parseInt(uangSejumlahInput) || 0;
       const untukPembayaran = document.getElementById('untuk-pembayaran').value.trim();
       
+      console.log('Form submitted:', { diterimaDari, uangSejumlah, untukPembayaran });
+      
       if (!diterimaDari || !untukPembayaran || uangSejumlah <= 0) {
-        showToast('Mohon lengkapi semua field', 'error');
+        showToast('Mohon lengkapi semua field dengan benar', 'error');
         return;
       }
       
-      const newReceipt = {
-        id: 'receipt_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-        no_seri: getNextSerialNumber(),
-        diterima_dari: diterimaDari,
-        uang_sejumlah: uangSejumlah,
-        terbilang: terbilang(uangSejumlah).trim(),
-        untuk_pembayaran: untukPembayaran,
-        tanggal: new Date().toISOString()
-      };
-      
-      receipts.unshift(newReceipt);
-      saveReceipts(receipts);
-      updateReceiptList();
-      
-      document.getElementById('receipt-form').reset();
-      showToast('Kwitansi berhasil dibuat! ✨');
-      
-      // Scroll to top to see the new receipt
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      try {
+        const newReceipt = {
+          id: 'receipt_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+          no_seri: getNextSerialNumber(),
+          diterima_dari: diterimaDari,
+          uang_sejumlah: uangSejumlah,
+          terbilang: terbilang(uangSejumlah).trim(),
+          untuk_pembayaran: untukPembayaran,
+          tanggal: new Date().toISOString()
+        };
+        
+        console.log('New receipt created:', newReceipt);
+        
+        receipts.unshift(newReceipt);
+        saveReceipts(receipts);
+        
+        console.log('Receipts after save:', receipts);
+        
+        updateReceiptList();
+        
+        document.getElementById('receipt-form').reset();
+        showToast('Kwitansi berhasil dibuat! ✨');
+        
+        // Scroll to receipt list
+        setTimeout(function() {
+          const receiptList = document.getElementById('receipt-list');
+          if (receiptList) {
+            receiptList.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 100);
+      } catch (error) {
+        console.error('Error creating receipt:', error);
+        showToast('Gagal membuat kwitansi. Silakan coba lagi.', 'error');
+      }
     });
 
     // Initialize display
@@ -859,5 +877,5 @@
       initializeApp();
     }
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c5f389d570db593',t:'MTc2OTc1Nzc3Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c5f4072a70ab593',t:'MTc2OTc1ODA5OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
